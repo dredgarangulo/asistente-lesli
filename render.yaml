@@ -1,8 +1,7 @@
 services:
   - type: web
-    name: agendar-citas-lesli
+    name: lesli-asistente
     env: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python main.py"
-    plan: free
-
+    port: 8000
