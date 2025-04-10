@@ -19,7 +19,7 @@ class CitaRequest(BaseModel):
     edad: int
     email: str
     telefono: str
-    fecha: str
+    fecha: str  # no se usa directamente, pero se puede agregar para disponibilidad
     motivo: str
     tipo: str
 
@@ -43,21 +43,18 @@ def agendar(cita: CitaRequest):
     }
 
     payload = {
-        "invitee": {
-            "email": cita.email,
-            "name": cita.nombre
-        },
-        "event_type": evento_uri,
+        "email": cita.email,
+        "name": cita.nombre,
         "questions_and_answers": [
             {"question": "Edad", "answer": str(cita.edad)},
             {"question": "Teléfono", "answer": cita.telefono},
             {"question": "Motivo de consulta", "answer": cita.motivo}
-        ]
+        ],
+        "timezone": "America/Merida"
     }
 
-    # En vez de /scheduled_events, usaremos /event_invitees (la correcta para agendar)
-    scheduling_url = f"{evento_uri}/invitees"
-    response = requests.post(scheduling_url, headers=headers, json=payload)
+    url = f"{evento_uri}/invitees"
+    response = requests.post(url, headers=headers, json=payload)
 
     if response.status_code in [200, 201]:
         return {"mensaje": "Cita agendada exitosamente."}
