@@ -49,14 +49,15 @@ def agendar(cita: CitaRequest):
         },
         "event_type": evento_uri,
         "questions_and_answers": [
-            {"question": "Edad", "answer": cita.edad},
+            {"question": "Edad", "answer": str(cita.edad)},
             {"question": "Teléfono", "answer": cita.telefono},
             {"question": "Motivo de consulta", "answer": cita.motivo}
-        ],
-        "start_time": cita.fecha + "T10:00:00Z"  # simplificado, puede mejorarse
+        ]
     }
 
-    response = requests.post("https://api.calendly.com/scheduled_events", headers=headers, json=payload)
+    # En vez de /scheduled_events, usaremos /event_invitees (la correcta para agendar)
+    scheduling_url = f"{evento_uri}/invitees"
+    response = requests.post(scheduling_url, headers=headers, json=payload)
 
     if response.status_code in [200, 201]:
         return {"mensaje": "Cita agendada exitosamente."}
